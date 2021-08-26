@@ -11,15 +11,22 @@ import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author hcadavid
  */
+
+@Component("InMemory")
 public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
 
-    private final Map<Tuple<String,String>,Blueprint> blueprints=new HashMap<>();
+    private final Map<Tuple<String, String>, Blueprint> blueprints = new HashMap<>();
 
     public InMemoryBlueprintPersistence() {
         //load stub data
@@ -43,7 +50,19 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     public Blueprint getBlueprint(String author, String bprintname) throws BlueprintNotFoundException {
         return blueprints.get(new Tuple<>(author, bprintname));
     }
-
+    
+    @Override
+    public Set<Blueprint> getBlueprintByAuthor(String author) throws BlueprintNotFoundException{
+    	Iterator it = blueprints.entrySet().iterator();
+    	Set<Blueprint> bluePrintsAuthor = new HashSet();
+    	while (it.hasNext()) {
+    		Map.Entry<Tuple, Blueprint> entry = (Map.Entry)it.next();
+    		if (entry.getKey().getElem1() == author) {
+    			bluePrintsAuthor.add(entry.getValue());
+    		}
+    	}
+		return bluePrintsAuthor;
+    }
     
     
 }

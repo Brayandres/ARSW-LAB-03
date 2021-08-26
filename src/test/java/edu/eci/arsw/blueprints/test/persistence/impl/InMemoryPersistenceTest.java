@@ -65,10 +65,34 @@ public class InMemoryPersistenceTest {
         catch (BlueprintPersistenceException ex){
             
         }
-                
         
     }
-
-
     
+    @Test
+    public void shouldSearchABlueprint() {
+    	InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+    	
+
+    	Point[] pts = new Point[]{new Point(10, 10), new Point(100, 100)};
+        Blueprint bp= new Blueprint("Brayan", "Canvas", pts);
+        
+    	Point[] pts1 = new Point[]{new Point(20, 20), new Point(200, 200)};
+        Blueprint bp1 = new Blueprint("Kevin", "Picture", pts);
+        
+        /*try {
+        	ibpp.saveBlueprint(bp);
+        	ibpp.saveBlueprint(bp1);
+        	
+        } catch (BlueprintPersistenceException ex) {
+            fail("Blueprint persistence failed inserting the first blueprint.");
+        } catch (BlueprintNotFoundException e) {
+        	
+        }*/
+    }
+    
+    @Test
+    public void shouldSearchBlueprintsByAndAuthor() {
+    	
+    }
+
 }

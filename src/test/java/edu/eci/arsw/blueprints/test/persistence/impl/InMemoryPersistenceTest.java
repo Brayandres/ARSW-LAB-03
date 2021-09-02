@@ -10,9 +10,15 @@ import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.impl.InMemoryBlueprintPersistence;
+import edu.eci.arsw.blueprints.services.BlueprintsServices;
+
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import static org.junit.Assert.*;
 
 /**
@@ -70,29 +76,68 @@ public class InMemoryPersistenceTest {
     
     @Test
     public void shouldSearchABlueprint() {
-    	InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+    	ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+    	BlueprintsServices bps = ac.getBean(BlueprintsServices.class);
     	
-
     	Point[] pts = new Point[]{new Point(10, 10), new Point(100, 100)};
         Blueprint bp= new Blueprint("Brayan", "Canvas", pts);
         
     	Point[] pts1 = new Point[]{new Point(20, 20), new Point(200, 200)};
-        Blueprint bp1 = new Blueprint("Kevin", "Picture", pts);
+        Blueprint bp1 = new Blueprint("Kevin", "Picture", pts1);
         
-        /*try {
-        	ibpp.saveBlueprint(bp);
-        	ibpp.saveBlueprint(bp1);
-        	
+        Blueprint b1, b2;
+        
+        try {
+        	bps.addNewBlueprint(bp);
+        	bps.addNewBlueprint(bp1);
+        	b1 =  bps.getBlueprint("Brayan", "Canvas");
+        	b2 =  bps.getBlueprint("Kevin", "Picture");
+            assertNotNull(b1);
+            assertNotNull(b2);
         } catch (BlueprintPersistenceException ex) {
             fail("Blueprint persistence failed inserting the first blueprint.");
         } catch (BlueprintNotFoundException e) {
-        	
-        }*/
+        	fail("Blueprint persistence failed searching bp by Author and Name.");
+        }
+        
+        try {
+        	bps.getBlueprint("Otro", "Obra");
+        } catch (BlueprintNotFoundException e) {
+        	assertEquals("The blueprint Obra with author Otro does not exist.", e.getMessage());
+        }
     }
     
     @Test
-    public void shouldSearchBlueprintsByAndAuthor() {
+    public void shouldSearchBlueprintsByAnAuthor() {
+    	ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+    	BlueprintsServices bps = ac.getBean(BlueprintsServices.class);
     	
+    	Point[] pts = new Point[]{new Point(10, 10), new Point(100, 100)};
+        Blueprint bp= new Blueprint("Brayan", "Canvas", pts);
+        
+    	Point[] pts1 = new Point[]{new Point(20, 20), new Point(200, 200)};
+        Blueprint bp1 = new Blueprint("Kevin", "Picture", pts1);
+        
+        Set<Blueprint> b1, b2;
+        
+        try {
+        	bps.addNewBlueprint(bp);
+        	bps.addNewBlueprint(bp1);
+        	b1 =  bps.getBlueprintsByAuthor("Brayan");
+        	b2 =  bps.getBlueprintsByAuthor("Kevin");
+            assertFalse(b1.isEmpty());
+            assertFalse(b2.isEmpty());
+        } catch (BlueprintPersistenceException ex) {
+            fail("Blueprint persistence failed inserting the first blueprint.");
+        } catch (BlueprintNotFoundException e) {
+        	fail("Blueprint persistence failed searching bp by Author and Name.");
+        }
+        
+        try {
+        	bps.getBlueprintsByAuthor("Otro");
+        } catch (BlueprintNotFoundException e) {
+        	assertEquals("No Blueprints were found with the author: Otro", e.getMessage());
+        }
     }
 
 }

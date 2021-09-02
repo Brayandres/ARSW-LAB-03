@@ -26,10 +26,10 @@ public class BlueprintsServices {
    
     @Autowired
     @Qualifier("InMemory")
-    BlueprintsPersistence bpp=null;
+    BlueprintsPersistence bpp = null;
     
-    public void addNewBlueprint(Blueprint bp){
-        
+    public void addNewBlueprint(Blueprint bp) throws BlueprintPersistenceException {
+        bpp.saveBlueprint(bp);
     }
     
     public Set<Blueprint> getAllBlueprints(){
@@ -46,14 +46,14 @@ public class BlueprintsServices {
     public Blueprint getBlueprint(String author, String name) throws BlueprintNotFoundException {
 		return bpp.getBlueprint(author, name);
     }
-    
+
     /**
      * 
      * @param author blueprint's author
      * @return all the blueprints of the given author
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
-    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
 		return bpp.getBlueprintByAuthor(author);
     }
     

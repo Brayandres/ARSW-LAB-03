@@ -5,14 +5,14 @@
  */
 package edu.eci.arsw.blueprints.persistence.impl;
 
-import edu.eci.arsw.blueprints.model.Blueprint;
-import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.model.Point;
+import java.util.Iterator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,28 +41,31 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         if (blueprints.containsKey(new Tuple<>(bp.getAuthor(),bp.getName()))){
             throw new BlueprintPersistenceException("The given blueprint already exists: "+bp);
         }
-        else{
-            blueprints.put(new Tuple<>(bp.getAuthor(),bp.getName()), bp);
-        }        
+        blueprints.put(new Tuple<>(bp.getAuthor(),bp.getName()), bp);        
     }
 
     @Override
     public Blueprint getBlueprint(String author, String bprintname) throws BlueprintNotFoundException {
-        return blueprints.get(new Tuple<>(author, bprintname));
+    	if (blueprints.get(new Tuple<>(author, bprintname)) == null) {
+    		throw new BlueprintNotFoundException("The blueprint "+bprintname+" with author "+author+" does not exist.");
+    	}
+    	return blueprints.get(new Tuple<>(author, bprintname));
     }
-    
-    @Override
+
+	@Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Set<Blueprint> getBlueprintByAuthor(String author) throws BlueprintNotFoundException{
-    	Iterator it = blueprints.entrySet().iterator();
     	Set<Blueprint> bluePrintsAuthor = new HashSet();
+    	Iterator it = blueprints.entrySet().iterator();
     	while (it.hasNext()) {
     		Map.Entry<Tuple, Blueprint> entry = (Map.Entry)it.next();
     		if (entry.getKey().getElem1() == author) {
     			bluePrintsAuthor.add(entry.getValue());
     		}
     	}
+    	if (bluePrintsAuthor.isEmpty()) {
+    		throw new BlueprintNotFoundException("No Blueprints were found with the author: "+author);
+    	}
 		return bluePrintsAuthor;
     }
-    
-    
 }

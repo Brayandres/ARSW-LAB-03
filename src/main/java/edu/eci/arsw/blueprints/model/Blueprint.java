@@ -44,6 +44,19 @@ public class Blueprint {
     public void addPoint(Point p){
         this.points.add(p);
     }
+    
+    public void cleanPoints() {
+    	points=new ArrayList<>();
+    }
+    
+    public String printPoints() {
+    	String result = "{";
+    	for (Point p: points) {
+    		result += "("+p.getX()+", "+p.getY()+") ";
+    	}
+    	result += "}\n";
+    	return result;
+    }
 
     @Override
     public String toString() {

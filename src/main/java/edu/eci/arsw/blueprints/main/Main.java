@@ -17,10 +17,12 @@ public class Main {
 		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
     	BlueprintsServices bps = ac.getBean(BlueprintsServices.class);
     	
-    	Point[] pts = new Point[]{new Point(10, 10), new Point(100, 100)};
+    	Point[] pts = new Point[]{new Point(10, 10), new Point(100, 100), new Point(10, 10), new Point(100, 100), 
+    							  new Point(20, 20), new Point(200, 200), new Point(20, 20), new Point(200, 200)};
         Blueprint bp= new Blueprint("Brayan", "Canvas", pts);
         
-    	Point[] pts1 = new Point[]{new Point(20, 20), new Point(200, 200)};
+    	Point[] pts1 = new Point[]{new Point(20, 20), new Point(200, 200), new Point(30, 30), new Point(300, 300), 
+    							   new Point(40, 40), new Point(400, 400), new Point(50, 50), new Point(500, 500)};
         Blueprint bp1 = new Blueprint("Kevin", "Picture", pts1);
         
     	Point[] pts2 = new Point[]{new Point(30, 30), new Point(300, 300)};
@@ -74,6 +76,20 @@ public class Main {
         	e.printStackTrace();
         	//System.out.println(e.getMessage());
         }
-        System.out.println("Terminó Tercer try.");
+        System.out.println("Terminó Tercer try.\n\n");
+        
+        
+        //PRUEBAS PUNTO 5
+        System.out.println("PRUEBAS PUNTO 5.");
+        
+        //For redundant
+        System.out.println(bp.printPoints());
+        Blueprint filtered = bps.applyFilter(bp);
+        System.out.println(filtered.printPoints());
+        
+        //For Sub-sampling
+        System.out.println(bp1.printPoints());
+        Blueprint filtered1 = bps.applyFilter(bp1);
+        System.out.println(filtered1.printPoints());
 	}
 }

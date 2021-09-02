@@ -140,4 +140,39 @@ public class InMemoryPersistenceTest {
         }
     }
 
+    @Test
+    public void shouldApplyRedundantFilter() {
+    	ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+    	BlueprintsServices bps = ac.getBean(BlueprintsServices.class);
+    	
+    	Point[] pts = new Point[]{new Point(10, 10), new Point(100, 100), new Point(10, 10), new Point(100, 100), 
+				  				  new Point(20, 20), new Point(200, 200), new Point(20, 20), new Point(200, 200)};
+		Blueprint bp= new Blueprint("Brayan", "Canvas", pts);
+
+		//Before being filtered
+		assertTrue(bp.getPoints().size() == 8);
+		assertEquals("{(10, 10) (100, 100) (10, 10) (100, 100) (20, 20) (200, 200) (20, 20) (200, 200) }\n", bp.printPoints());
+		
+		//After being filtered
+		assertTrue(bps.applyFilter(bp).getPoints().size() == 4);
+		assertEquals("{(10, 10) (100, 100) (20, 20) (200, 200) }\n", bp.printPoints());
+    }
+    
+    //@Test
+    public void shouldApplySubsamplingFilter() {
+    	ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+    	BlueprintsServices bps = ac.getBean(BlueprintsServices.class);
+    	
+    	Point[] pts1 = new Point[]{new Point(20, 20), new Point(200, 200), new Point(30, 30), new Point(300, 300), 
+		   		   				   new Point(40, 40), new Point(400, 400), new Point(50, 50), new Point(500, 500)};
+    	Blueprint bp1 = new Blueprint("Kevin", "Picture", pts1);
+    	
+    	//Before being filtered
+    	assertTrue(bp1.getPoints().size() == 8);
+    	assertEquals("{(20, 20) (200, 200) (30, 30) (300, 300) (40, 40) (400, 400) (50, 50) (500, 500) }\n", bp1.printPoints());
+    	
+    	//After being filtered
+    	assertTrue(bps.applyFilter(bp1).getPoints().size() == 4);
+    	assertEquals("{(20, 20) (30, 30) (40, 40) (50, 50) }\n", bp1.printPoints());
+    }
 }
